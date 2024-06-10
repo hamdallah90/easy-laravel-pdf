@@ -16,6 +16,6 @@ class EasyLaravelPdfServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('easy-laravel-pdf')
-            ->hasConfigFile();
+            ->hasConfigFile('easy-laravel-pdf');
     }
 }
