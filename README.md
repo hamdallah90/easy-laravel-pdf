@@ -25,7 +25,7 @@ Easy Laravel PDF is a Laravel package that facilitates PDF generation within Lar
 2. **Publish Configuration:**
    Laravel's package discovery will automatically register the service provider. To publish the package configuration, run:
    ```bash
-   php artisan vendor:publish --tag=easy-laravel-pdf-config
+   php artisan vendor:publish --tag=pdf-config
    ```
 
 ## Configuration
