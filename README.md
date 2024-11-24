@@ -51,7 +51,16 @@ To load raw HTML content into the PDF generator:
 ```php
 use Jouda\EasyLaravelPdf\Facades\EasyLaravelPdf;
 
-EasyLaravelPdf::loadView('view.name', ['dataKey' => 'dataValue'])->save('/path/to/file.pdf');
+EasyLaravelPdf::loadHtml('<h1>Test PDF</h1>')->save('/path/to/file.pdf');
+```
+
+### URL To PDF
+To Print url insted of send html or view:
+
+```php
+use Jouda\EasyLaravelPdf\Facades\EasyLaravelPdf;
+
+EasyLaravelPdf::setUrl('http://google.com')->save('/path/to/file.pdf');
 ```
 
 ### Get the PDF as an UploadedFile

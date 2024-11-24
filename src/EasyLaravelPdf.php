@@ -24,6 +24,14 @@ class EasyLaravelPdf
     private string $html_to_pdf_url = '';
 
     /**
+     * The url to send the html to and get the pdf
+     * 
+     * @var string
+     * @access private
+     */
+    private string $url = '';
+
+    /**
      * constructor
      * 
      * @param array $options The options to pass to the puppeteer
@@ -125,6 +133,19 @@ class EasyLaravelPdf
     }
 
     /**
+     * Set a url
+     * 
+     * @param string $url The url
+     * @return self
+     * @access public
+     */
+    public function setUrl(string $url)
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
      * Save the pdf to a file
      * 
      * @param string $path The path to save the pdf to
@@ -185,6 +206,7 @@ class EasyLaravelPdf
     {
         $pdfResponse = Http::timeout(60*2)->asJson()->post($this->html_to_pdf_url, [
             'html' => $this->html,
+            'url' => $this->url,
             'options' => $this->options,
             'launch_args' => $this->puppeteerLunchArgs
         ]);

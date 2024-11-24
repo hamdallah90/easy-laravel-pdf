@@ -38,17 +38,22 @@ function launchPuppeteer(launchArgs) {
 
 // POST endpoint to receive HTML and convert it to PDF
 app.post("/html-to-pdf", async (req, res) => {
-  const { html, options, launch_args } = req.body;
+  const { html, url, options, launch_args } = req.body;
 
-  if (!html) {
-    return res.status(400).send("No HTML content provided");
+  if (!html && !url) {
+    return res.status(400).send("No HTML content or URL provided");
   }
 
   try {
     const browser = await launchPuppeteer(launch_args || []);
     const page = await browser.newPage();
 
-    await page.setContent(html);
+    if (url) {
+      await page.goto(url, { waitUntil: "networkidle0" });
+    } else {
+      await page.setContent(html);
+    }
+
     await page.emulateMediaType("print");
 
     // wait until fonts are loaded
@@ -67,17 +72,22 @@ app.post("/html-to-pdf", async (req, res) => {
 });
 
 app.post("/html-to-image", async (req, res) => {
-  const { html, options, launch_args } = req.body;
+  const { html, url, options, launch_args } = req.body;
 
-  if (!html) {
-    return res.status(400).send("No HTML content provided");
+  if (!html && !url) {
+    return res.status(400).send("No HTML content or URL provided");
   }
 
   try {
     const browser = await launchPuppeteer(launch_args || []);
     const page = await browser.newPage();
 
-    await page.setContent(html);
+    if (url) {
+      await page.goto(url, { waitUntil: "networkidle0" });
+    } else {
+      await page.setContent(html);
+    }
+    
     await page.emulateMediaType("print");
 
     // wait until fonts are loaded
