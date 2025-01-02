@@ -30,6 +30,14 @@ class EasyLaravelPdf
      * @access private
      */
     private string $url = '';
+    
+    /**
+     * Whether to use wkhtmltopdf
+     * 
+     * @var bool
+     * @access private
+     */
+    private bool $use_wkhtmltopdf = false;
 
     /**
      * constructor
@@ -146,6 +154,19 @@ class EasyLaravelPdf
     }
 
     /**
+     * Use Wkhtmltopdf
+     * 
+     * @param bool $value
+     * @return self
+     * @access public
+     */
+    public function setUseWkhtmltopdf(bool $value)
+    {
+        $this->use_wkhtmltopdf = $value;
+        return $this;
+    }
+
+    /**
      * Save the pdf to a file
      * 
      * @param string $path The path to save the pdf to
@@ -208,7 +229,8 @@ class EasyLaravelPdf
             'html' => $this->html,
             'url' => $this->url,
             'options' => $this->options,
-            'launch_args' => $this->puppeteerLunchArgs
+            'launch_args' => $this->puppeteerLunchArgs,
+            'use_wkhtmltopdf' => $this->use_wkhtmltopdf
         ]);
 
         return $pdfResponse->body();
