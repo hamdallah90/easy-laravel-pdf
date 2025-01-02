@@ -4,6 +4,8 @@ namespace Jouda\EasyLaravelPdf;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
+use Gotenberg\Gotenberg;
+use Gotenberg\Stream;
 
 class EasyLaravelPdf
 {
@@ -30,14 +32,6 @@ class EasyLaravelPdf
      * @access private
      */
     private string $url = '';
-    
-    /**
-     * Whether to use wkhtmltopdf
-     * 
-     * @var bool
-     * @access private
-     */
-    private bool $use_wkhtmltopdf = false;
 
     /**
      * constructor
@@ -154,19 +148,6 @@ class EasyLaravelPdf
     }
 
     /**
-     * Use Wkhtmltopdf
-     * 
-     * @param bool $value
-     * @return self
-     * @access public
-     */
-    public function setUseWkhtmltopdf(bool $value)
-    {
-        $this->use_wkhtmltopdf = $value;
-        return $this;
-    }
-
-    /**
      * Save the pdf to a file
      * 
      * @param string $path The path to save the pdf to
@@ -201,9 +182,8 @@ class EasyLaravelPdf
     public function stream(string $filename = null)
     {
         $filename = $filename ?? $this->filename;
-
         $pdf = $this->sendHtmlToServerAndGetPdf();
-        
+
         // check if the pdf is valid
         if (substr($pdf, 0, 4) !== '%PDF') {
             throw new \Exception($pdf);
@@ -225,14 +205,40 @@ class EasyLaravelPdf
      */
     private function sendHtmlToServerAndGetPdf()
     {
+        if (config('easy-laravel-pdf.provider') === 'gotenberg') {
+            return $this->buildPdfUsingGotenberg();
+        }
+
         $pdfResponse = Http::timeout(60*2)->asJson()->post($this->html_to_pdf_url, [
             'html' => $this->html,
             'url' => $this->url,
             'options' => $this->options,
-            'launch_args' => $this->puppeteerLunchArgs,
-            'use_wkhtmltopdf' => $this->use_wkhtmltopdf
+            'launch_args' => $this->puppeteerLunchArgs
         ]);
 
         return $pdfResponse->body();
+    }
+
+    /**
+     * Build the pdf using gotenberg
+     * 
+     * @return string
+     * @access private
+     */
+    private function buildPdfUsingGotenberg()
+    {
+        // check if the gotenberg package is installed
+        if (!class_exists(Gotenberg::class)) {
+            throw new \Exception('Please install the gotenberg package - composer require gotenberg/gotenberg-php');
+        }
+
+        $gotenberg = Gotenberg::chromium($this->html_to_pdf_url)->pdf();
+
+        if (!empty($this->html)) {
+            $gotenberg->html(Stream::string('index.html', $this->html));
+        }
+
+
+        return Gotenberg::send($gotenberg);
     }
 }
