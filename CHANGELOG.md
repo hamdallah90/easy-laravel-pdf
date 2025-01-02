@@ -2,6 +2,10 @@
 
 All notable changes to `easy-laravel-pdf` will be documented in this file.
 
+## 1.2 - 2025-01-02
+
+**Full Changelog**: https://github.com/hamdallah90/easy-laravel-pdf/compare/1.1...1.2
+
 ## 1.1 Add url option - 2024-11-24
 
 ### What's Changed
