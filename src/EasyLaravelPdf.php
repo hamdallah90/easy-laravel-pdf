@@ -253,7 +253,7 @@ class EasyLaravelPdf
             $gotenberg = $gotenberg->url($this->url);
         }
 
-        return Gotenberg::send($gotenberg);
+        return Gotenberg::send($gotenberg)?->body();
     }
 
     /**
