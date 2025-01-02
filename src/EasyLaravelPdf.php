@@ -234,11 +234,51 @@ class EasyLaravelPdf
 
         $gotenberg = Gotenberg::chromium($this->html_to_pdf_url)->pdf();
 
-        if (!empty($this->html)) {
-            $gotenberg->html(Stream::string('index.html', $this->html));
+        if ($this->options['printBackground'] ?? false) {
+            $gotenberg = $gotenberg->printBackground();
         }
 
+        if (($this->options['orientation'] ?? false) === 'landscape') {
+            $gotenberg = $gotenberg->landscape();
+        }
+
+        // format is A4
+        if ($this->options['format'] ?? false) {
+            $gotenberg = $gotenberg->paperSize(...$this->getGotenbergSizeByFormat($this->options['format']));
+        }
+        
+        if (!empty($this->html)) {
+            $gotenberg = $gotenberg->html(Stream::string('index.html', $this->html));
+        } else {
+            $gotenberg = $gotenberg->url($this->url);
+        }
 
         return Gotenberg::send($gotenberg);
+    }
+
+    /**
+     * Get the size of the pdf
+     * 
+     * @param string $format The format of the pdf
+     * @return array
+     * @access private
+     */
+    private function getGotenbergSizeByFormat($format = 'A4')
+    {
+        $formats = [
+            'Letter' => [8.5, 11],
+            'Legal' => [8.5, 14],
+            'Tabloid' => [11, 17],
+            'Ledger' => [17, 11],
+            'A0' => [33.1, 46.8],
+            'A1' => [23.4, 33.1],
+            'A2' => [16.54, 23.4],
+            'A3' => [11.7, 16.54],
+            'A4' => [8.27, 11.7],
+            'A5' => [5.83, 8.27],
+            'A6' => [4.13, 5.83],
+        ];
+
+        return $formats[$format] ?? $formats['A4'];
     }
 }
