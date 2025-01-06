@@ -70,7 +70,7 @@ class EasyLaravelPdf
             throw new \Exception('Please set the html_to_pdf_url in the config file');
         }
 
-        $this->options = array_merge($this->defaultOptions, $this->options);
+        $this->options = array_merge($this->defaultOptions, $options);
     }
 
     /**
@@ -82,7 +82,7 @@ class EasyLaravelPdf
      */
     public function setOptions(array $options)
     {
-        $this->options = $options;
+        $this->options = array_merge($this->defaultOptions, $options);
         return $this;
     }
 
