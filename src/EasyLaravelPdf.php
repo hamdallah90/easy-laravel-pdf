@@ -10,6 +10,24 @@ use Gotenberg\Stream;
 class EasyLaravelPdf
 {
     /**
+     * The default options
+     * 
+     * @var array
+     * @access private
+     */
+    private array $defaultOptions = [
+        'networkIdleEvent' => true,
+    ];
+
+    /**
+     * The options to pass to the puppeteer
+     * 
+     * @var array
+     * @access private
+     */
+    private array $options = [];
+    
+    /**
      * The html content to convert to pdf
      * 
      * @var string
@@ -42,7 +60,7 @@ class EasyLaravelPdf
      * @access public
      */
     public function __construct(
-        protected array $options = [],
+        array $options = [],
         protected array $puppeteerLunchArgs = [],
         protected string $filename = 'filename.pdf',
     ) {
@@ -51,6 +69,8 @@ class EasyLaravelPdf
         if (empty($this->html_to_pdf_url)) {
             throw new \Exception('Please set the html_to_pdf_url in the config file');
         }
+
+        $this->options = array_merge($this->defaultOptions, $this->options);
     }
 
     /**
@@ -236,6 +256,10 @@ class EasyLaravelPdf
 
         if ($this->options['printBackground'] ?? false) {
             $gotenberg = $gotenberg->printBackground();
+        }
+
+        if ($this->options['networkIdleEvent'] ?? false) {
+            $gotenberg = $gotenberg->skipNetworkIdleEvent(false);
         }
 
         if (($this->options['orientation'] ?? false) === 'landscape') {
