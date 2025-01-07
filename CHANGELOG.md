@@ -2,6 +2,10 @@
 
 All notable changes to `easy-laravel-pdf` will be documented in this file.
 
+## 2.0 - 2025-01-07
+
+**Full Changelog**: https://github.com/hamdallah90/easy-laravel-pdf/compare/1.8...2.0
+
 ## 1.8 - 2025-01-06
 
 **Full Changelog**: https://github.com/hamdallah90/easy-laravel-pdf/compare/1.7...1.8
