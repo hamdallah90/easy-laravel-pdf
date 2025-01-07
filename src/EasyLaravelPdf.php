@@ -16,7 +16,13 @@ class EasyLaravelPdf
      * @access private
      */
     private array $defaultOptions = [
-        'networkIdleEvent' => true,
+        'emulatedMediaType' => 'print',
+        'margin' => [
+            'top' => '0',
+            'right' => '0',
+            'bottom' => '0',
+            'left' => '0',
+        ],
     ];
 
     /**
@@ -264,6 +270,38 @@ class EasyLaravelPdf
 
         if (($this->options['orientation'] ?? false) === 'landscape') {
             $gotenberg = $gotenberg->landscape();
+        }
+
+        if ($this->options['margin'] ?? false) {
+            $gotenberg = $gotenberg->margins(
+                $this->options['margin']['top'] ?? '0',
+                $this->options['margin']['bottom'] ?? '0',
+                $this->options['margin']['left'] ?? '0',
+                $this->options['margin']['right'] ?? '0'
+            );
+        }
+
+        if ($this->options['waitForExpression'] ?? false) {
+            $gotenberg = $gotenberg->waitForExpression($this->options['waitForExpression']);
+        }
+
+        if ($this->options['emulatedMediaType'] ?? false) {
+            switch ($this->options['emulatedMediaType']) {
+                case 'screen':
+                    $gotenberg = $gotenberg->emulateScreenMediaType();
+                    break;
+                case 'print':
+                    $gotenberg = $gotenberg->emulatePrintMediaType();
+                    break;
+            }
+        }
+
+        if ($this->options['preferCssPageSize'] ?? false) {
+            $gotenberg = $gotenberg->preferCssPageSize();
+        }
+
+        if ($this->options['waitDelay'] ?? false) {
+            $gotenberg = $gotenberg->waitDelay($this->options['waitDelay']);
         }
 
         // format is A4
