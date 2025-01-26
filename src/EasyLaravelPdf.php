@@ -42,6 +42,14 @@ class EasyLaravelPdf
     private string $html = '';
 
     /**
+     * The html to pdf provider
+     * 
+     * @var string
+     * @access private
+     */
+    private string $html_to_pdf_provider = '';
+
+    /**
      * The url to send the html to and get the pdf
      * 
      * @var string
@@ -70,7 +78,8 @@ class EasyLaravelPdf
         protected array $puppeteerLunchArgs = [],
         protected string $filename = 'filename.pdf',
     ) {
-        $this->html_to_pdf_url = config('easy-laravel-pdf.url');
+        $this->html_to_pdf_url = $options['html_to_pdf_url'] ?? config('easy-laravel-pdf.url');
+        $this->html_to_pdf_provider = $options['html_to_pdf_provider'] ?? config('easy-laravel-pdf.provider');
 
         if (empty($this->html_to_pdf_url)) {
             throw new \Exception('Please set the html_to_pdf_url in the config file');
@@ -231,7 +240,7 @@ class EasyLaravelPdf
      */
     private function sendHtmlToServerAndGetPdf()
     {
-        if (config('easy-laravel-pdf.provider') === 'gotenberg') {
+        if ($this->html_to_pdf_provider === 'gotenberg') {
             return $this->buildPdfUsingGotenberg();
         }
 
